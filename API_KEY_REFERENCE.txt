@@ -1,0 +1,33 @@
+# 🔑 API Key Reference Card
+
+## Production API Key
+```
+F226D6E68DF094313A7416A9F2AC9CBB
+```
+
+## ⚠️ IMPORTANT
+- Save this key securely
+- Use in Render environment variable: `API_KEY`
+- Use in all production API requests
+- Don't share publicly
+
+## Local Development Key
+```
+test-key-12345
+```
+(from .env file)
+
+## URLs After Deployment
+
+```
+Public Endpoint:
+https://dockerapi-xxxxx.onrender.com/
+
+Protected Endpoint:
+https://dockerapi-xxxxx.onrender.com/secret?api_key=F226D6E68DF094313A7416A9F2AC9CBB
+
+Health Check:
+https://dockerapi-xxxxx.onrender.com/health
+```
+
+Replace `xxxxx` with your Render service ID
