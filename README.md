@@ -1,24 +1,77 @@
-# docker-fastapi 
+# Secret API with Authentication
 
-A sample project for deploying to a PaaS Service like Render or CSC Rahti.
+A FastAPI application demonstrating secure API key authentication with both local and cloud deployment.
 
-### For deployment to Render
+## Features
 
-- Log in to https://render.com/
-- Create a New Web Service.
-- Connect to GitHub and choose Connect Credentials.
-- Set Language to Docker.
-- Select the EU Central region (or whatever is nearest to you)
-- Choose Instance Type: Free.
+- **Public Endpoint** - Welcome message accessible without authentication
+- **Protected Endpoint** - Returns secret data only with valid API key
+- **Flexible Authentication** - Accept API key via header or query parameter
+- **Local Development** - Uses `.env` file with `python-dotenv`
+- **Production Ready** - Environment variable support for cloud deployment
+- **Health Check** - Monitoring endpoint for deployment
+- **Docker Support** - Containerized deployment ready
 
-### For deployment to CSC Rahti (OpenShift)
+## Quick Start
 
-Note: Change the Git reference setting in OpenShift to *main*:    
-    Edit BuildConfig ==> Show advanced git options ==> Git reference: `main`
+### Local Development
 
-### For local real-time development
+1. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Rename `.env-example` to `.env` to override the `MODE=production`set in the `Dockerfile`. Note that this needs a valueless declaration of `MODE` in `docker-compose.yml`
+2. **Create `.env` file**:
+   ```bash
+   cp .env-example .env
+   # Edit .env and set API_KEY=test-key-12345
+   ```
 
-To run the container locally:
-`docker-compose up --build`
+3. **Run the application**:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+4. **Test endpoints**:
+   ```bash
+   curl http://127.0.0.1:8000/
+   curl -H "X-API-Key: test-key-12345" http://127.0.0.1:8000/secret
+   curl "http://127.0.0.1:8000/secret?api_key=test-key-12345"
+   curl http://127.0.0.1:8000/health
+   ```
+
+## API Endpoints
+
+### GET /
+Public welcome endpoint. No authentication required.
+
+### GET /secret
+Protected endpoint returning secret data. Requires API key.
+- Header: `X-API-Key: your-api-key`
+- Query: `?api_key=your-api-key`
+
+### GET /health
+Health check endpoint for monitoring.
+
+## API Key Management
+
+- **Local**: Store in `.env` file (not committed to git)
+- **Production**: Set as environment variable in hosting platform
+
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+Quick steps for Render:
+1. Push code to GitHub
+2. Create new Web Service on Render
+3. Set `API_KEY` environment variable
+4. Deploy!
+
+## Security Best Practices
+
+- Never commit `.env` file to version control
+- Use HTTPS for all production traffic
+- Use strong, random keys in production
+- Implement rate limiting for production
+- Rotate API keys regularly
