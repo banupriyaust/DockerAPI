@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret API - Deployment & Testing Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        h2 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .api-key-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .api-key {
+            background: #333;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        .steps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .step {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-left: 4px solid #667eea;
+            border-radius: 3px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .curl {
+            color: #a6e22e;
+        }
+        
+        .http {
+            color: #66d9ef;
+        }
+        
+        .response {
+            color: #f92672;
+        }
+        
+        .success {
+            color: #a6e22e;
+        }
+        
+        .error {
+            color: #f92672;
+        }
+        
+        .info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+        }
+        
+        tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin: 5px 5px 5px 0;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            color: #666;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .test-case {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            border-radius: 3px;
+        }
+        
+        .test-case h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Secret API</h1>
+            <p>Deployment & Testing Guide</p>
+        </header>
+        
+        <div class="content">
+            <!-- API Key Section -->
+            <div class="section">
+                <h2>🔑 Your Production API Key</h2>
+                <div class="api-key-box">
+                    <p><strong>⚠️ SAVE THIS KEY - NEEDED FOR RENDER DEPLOYMENT</strong></p>
+                    <div class="api-key">F226D6E68DF094313A7416A9F2AC9CBB</div>
+                    <p style="margin-top: 10px;">
+                        <strong>Local Development Key:</strong> test-key-12345
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Deployment Steps -->
+            <div class="section">
+                <h2>🚀 Render Deployment (5 Steps)</h2>
+                
+                <div class="steps">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Go to Render.com</strong>
+                        <p style="margin-top: 10px;">Visit <code>https://render.com/</code> and sign up or login with GitHub</p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Create Web Service</strong>
+                        <p style="margin-top: 10px;">Click "New +" → "Web Service" → Connect to <code>banupriyaust/DockerAPI</code></p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Configure Service</strong>
+                        <div class="code-block">
+Name: dockerapi
+Language: Python 3
+Build Command: pip install -r requirements.txt
+Start Command: uvicorn app.main:app --host 0.0.0.0
+Instance Type: Free
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Set Environment Variable</strong>
+                        <p style="margin-top: 10px;">Go to "Environment" tab and add:</p>
+                        <div class="code-block">
+Key: API_KEY
+Value: F226D6E68DF094313A7416A9F2AC9CBB
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <strong>Deploy!</strong>
+                        <p style="margin-top: 10px;">Click "Create Web Service" and wait 2-5 minutes for deployment</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Local Testing -->
+            <div class="section">
+                <h2>🧪 Testing Locally</h2>
+                
+                <div class="info">
+                    <strong>ℹ️ Make sure the server is running:</strong>
+                    <div class="code-block" style="margin-top: 10px;">
+<span class="curl">cd C:\Users\banup\DockerAPI</span>
+<span class="curl">uvicorn app.main:app --reload</span>
+                    </div>
+                </div>
+                
+                <h3>Test 1: Public Endpoint (No Authentication)</h3>
+                <div class="test-case">
+                    <h4>Request</h4>
+                    <div class="code-block">
+<span class="http">GET</span> http://127.0.0.1:8000/
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Using curl</h4>
+                    <div class="code-block">
+<span class="curl">curl http://127.0.0.1:8000/</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Expected Output (200 OK)</h4>
+                    <div class="code-block">
+<span class="response">{
+  "msg": "Welcome to DockerAPI!",
+  "v": "1.0",
+  "note": "Use /secret endpoint with X-API-Key header or ?api_key= parameter"
+}</span>
+                    </div>
+                </div>
+                
+                <h3>Test 2: Health Check</h3>
+                <div class="test-case">
+                    <h4>Request</h4>
+                    <div class="code-block">
+<span class="http">GET</span> http://127.0.0.1:8000/health
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Using curl</h4>
+                    <div class="code-block">
+<span class="curl">curl http://127.0.0.1:8000/health</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Expected Output (200 OK)</h4>
+                    <div class="code-block">
+<span class="response">{
+  "status": "healthy",
+  "service": "DockerAPI"
+}</span>
+                    </div>
+                </div>
+                
+                <h3>Test 3: Protected Endpoint Without API Key</h3>
+                <div class="test-case">
+                    <h4>Request</h4>
+                    <div class="code-block">
+<span class="http">GET</span> http://127.0.0.1:8000/secret
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Using curl</h4>
+                    <div class="code-block">
+<span class="curl">curl http://127.0.0.1:8000/secret</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Expected Output (401 Unauthorized)</h4>
+                    <div class="code-block">
+<span class="error">{
+  "detail": "API key required. Provide X-API-Key header or api_key query parameter."
+}</span>
+                    </div>
+                </div>
+                
+                <h3>Test 4: Protected Endpoint With Invalid API Key</h3>
+                <div class="test-case">
+                    <h4>Request</h4>
+                    <div class="code-block">
+<span class="http">GET</span> http://127.0.0.1:8000/secret?api_key=wrong-key
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Using curl</h4>
+                    <div class="code-block">
+<span class="curl">curl "http://127.0.0.1:8000/secret?api_key=wrong-key"</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Expected Output (403 Forbidden)</h4>
+                    <div class="code-block">
+<span class="error">{
+  "detail": "Invalid API key"
+}</span>
+                    </div>
+                </div>
+                
+                <h3>Test 5: Protected Endpoint With Valid API Key (Query Parameter)</h3>
+                <div class="test-case">
+                    <h4>Request</h4>
+                    <div class="code-block">
+<span class="http">GET</span> http://127.0.0.1:8000/secret?api_key=test-key-12345
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Using curl</h4>
+                    <div class="code-block">
+<span class="curl">curl "http://127.0.0.1:8000/secret?api_key=test-key-12345"</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Expected Output (200 OK)</h4>
+                    <div class="code-block">
+<span class="success">{
+  "secret": "🔐 This is a secret message! Only authenticated users can see this.",
+  "data": {
+    "classified_info": "Confidential data accessible only with valid API key",
+    "timestamp": "2026-01-25",
+    "status": "success"
+  }
+}</span>
+                    </div>
+                </div>
+                
+                <h3>Test 6: Protected Endpoint With Valid API Key (Header)</h3>
+                <div class="test-case">
+                    <h4>Request</h4>
+                    <div class="code-block">
+<span class="http">GET</span> http://127.0.0.1:8000/secret
+<span class="http">Headers:</span> X-API-Key: test-key-12345
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Using curl</h4>
+                    <div class="code-block">
+<span class="curl">curl -H "X-API-Key: test-key-12345" http://127.0.0.1:8000/secret</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 15px;">Expected Output (200 OK)</h4>
+                    <div class="code-block">
+<span class="success">{
+  "secret": "🔐 This is a secret message! Only authenticated users can see this.",
+  "data": {
+    "classified_info": "Confidential data accessible only with valid API key",
+    "timestamp": "2026-01-25",
+    "status": "success"
+  }
+}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PowerShell Testing -->
+            <div class="section">
+                <h2>💻 Testing with PowerShell</h2>
+                
+                <h3>Test All Endpoints</h3>
+                <div class="code-block">
+<span class="curl"># Public endpoint</span>
+<span class="response">Invoke-WebRequest http://127.0.0.1:8000/ | Select-Object -ExpandProperty Content</span>
+
+<span class="curl"># Health check</span>
+<span class="response">Invoke-WebRequest http://127.0.0.1:8000/health | Select-Object -ExpandProperty Content</span>
+
+<span class="curl"># Protected endpoint with query parameter</span>
+<span class="response">Invoke-WebRequest "http://127.0.0.1:8000/secret?api_key=test-key-12345" | Select-Object -ExpandProperty Content</span>
+
+<span class="curl"># Protected endpoint with header</span>
+<span class="response">$headers = @{"X-API-Key" = "test-key-12345"}
+Invoke-WebRequest http://127.0.0.1:8000/secret -Headers $headers | Select-Object -ExpandProperty Content</span>
+                </div>
+            </div>
+            
+            <!-- Browser Testing -->
+            <div class="section">
+                <h2>🌐 Testing in Browser</h2>
+                
+                <p>You can test directly by typing these URLs in your browser's address bar:</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Test</th>
+                            <th>URL</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Public Endpoint</td>
+                            <td><code>http://127.0.0.1:8000/</code></td>
+                            <td><span class="badge badge-success">200 OK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Health Check</td>
+                            <td><code>http://127.0.0.1:8000/health</code></td>
+                            <td><span class="badge badge-success">200 OK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Secret (No Key)</td>
+                            <td><code>http://127.0.0.1:8000/secret</code></td>
+                            <td><span class="badge badge-warning">401 Error</span></td>
+                        </tr>
+                        <tr>
+                            <td>Secret (Wrong Key)</td>
+                            <td><code>http://127.0.0.1:8000/secret?api_key=wrong</code></td>
+                            <td><span class="badge badge-warning">403 Error</span></td>
+                        </tr>
+                        <tr>
+                            <td>Secret (Valid Key)</td>
+                            <td><code>http://127.0.0.1:8000/secret?api_key=test-key-12345</code></td>
+                            <td><span class="badge badge-success">200 OK</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Production Testing -->
+            <div class="section">
+                <h2>🌍 Production Testing (After Render Deployment)</h2>
+                
+                <div class="warning">
+                    <strong>⚠️ After deployment to Render, replace these URLs:</strong>
+                </div>
+                
+                <p>Once deployed at <code>https://dockerapi-xxxxx.onrender.com/</code></p>
+                
+                <div class="code-block">
+<span class="curl"># Public endpoint</span>
+https://dockerapi-xxxxx.onrender.com/
+
+<span class="curl"># Health check</span>
+https://dockerapi-xxxxx.onrender.com/health
+
+<span class="curl"># Protected endpoint</span>
+https://dockerapi-xxxxx.onrender.com/secret?api_key=F226D6E68DF094313A7416A9F2AC9CBB
+                </div>
+                
+                <div class="info">
+                    <strong>Replace <code>xxxxx</code> with your actual Render service ID</strong>
+                </div>
+            </div>
+            
+            <!-- Summary -->
+            <div class="section">
+                <h2>✅ Verification Checklist</h2>
+                
+                <div class="success-box">
+                    <div style="margin: 10px 0;">✅ Code committed to GitHub</div>
+                    <div style="margin: 10px 0;">✅ All tests passing locally</div>
+                    <div style="margin: 10px 0;">✅ API key generated (F226D6E68DF094313A7416A9F2AC9CBB)</div>
+                    <div style="margin: 10px 0;">✅ Documentation complete</div>
+                    <div style="margin: 10px 0;">✅ Ready for Render deployment</div>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="section">
+                <h2>📚 Quick Links</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GitHub Repository</td>
+                            <td><a href="https://github.com/banupriyaust/DockerAPI" target="_blank">https://github.com/banupriyaust/DockerAPI</a></td>
+                        </tr>
+                        <tr>
+                            <td>Render Dashboard</td>
+                            <td><a href="https://render.com/" target="_blank">https://render.com/</a></td>
+                        </tr>
+                        <tr>
+                            <td>Local API (when running)</td>
+                            <td><a href="http://127.0.0.1:8000/" target="_blank">http://127.0.0.1:8000/</a></td>
+                        </tr>
+                        <tr>
+                            <td>Swagger Docs</td>
+                            <td><a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Secret API - Secure REST API with Authentication</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Generated: January 25, 2026</p>
+        </footer>
+    </div>
+</body>
+</html>
